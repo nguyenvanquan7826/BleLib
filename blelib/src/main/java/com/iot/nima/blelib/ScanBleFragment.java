@@ -107,9 +107,13 @@ public class ScanBleFragment extends Fragment {
         if (isScan) {
             // Stops scanning after a pre-defined scan period.
             mHandler.postDelayed(() -> {
-                isScanning = false;
-                bluetoothAdapter.stopLeScan(bleScanCallback);
-                updateScanUI();
+                if (isScanning) {
+                    isScanning = false;
+                    bluetoothAdapter.stopLeScan(bleScanCallback);
+                    updateScanUI();
+                } else {
+                    Log.i("ScanBleFragment", "scan stopped");
+                }
             }, SCAN_PERIOD);
 
             isScanning = true;
