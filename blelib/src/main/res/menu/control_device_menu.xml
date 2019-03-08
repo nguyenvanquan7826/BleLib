@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menuConnect"
+        android:icon="@drawable/ic_bluetooth_connect"
+        android:title="@string/connected"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menuDisconnect"
+        android:icon="@drawable/ic_bluetooth_disconnect"
+        android:title="@string/disconnected"
+        app:showAsAction="always" />
+
+</menu>
