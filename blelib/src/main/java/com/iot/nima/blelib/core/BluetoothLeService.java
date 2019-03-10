@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.iot.nima.blelib;
+package com.iot.nima.blelib.core;
 
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
@@ -32,6 +32,8 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
+
+import com.iot.nima.blelib.BuildConfig;
 
 import java.util.List;
 import java.util.UUID;

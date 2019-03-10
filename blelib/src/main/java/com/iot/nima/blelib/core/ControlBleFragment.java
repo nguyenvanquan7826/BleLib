@@ -1,4 +1,4 @@
-package com.iot.nima.blelib;
+package com.iot.nima.blelib.core;
 
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
@@ -22,6 +22,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.iot.nima.blelib.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

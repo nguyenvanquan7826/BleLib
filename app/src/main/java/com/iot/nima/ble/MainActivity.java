@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.iot.nima.blelib.ScanBleFragment;
+import com.iot.nima.blelib.ScanFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.contentMain, new ScanBleFragment())
+                .replace(R.id.contentMain, new ScanFragment())
                 .commit();
     }
 }

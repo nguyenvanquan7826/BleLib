@@ -32,7 +32,7 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.View
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_device_ble, viewGroup, false);
+        View view = LayoutInflater.from(context).inflate(com.iot.nima.blelib.R.layout.item_device_ble, viewGroup, false);
         return new ViewHolder(view);
     }
 
@@ -40,7 +40,7 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int pos) {
         BluetoothDevice device = deviceList.get(pos);
         String name = device.getName();
-        if (TextUtils.isEmpty(name)) name = context.getString(R.string.unknown_device);
+        if (TextUtils.isEmpty(name)) name = context.getString(com.iot.nima.blelib.R.string.unknown_device);
         viewHolder.tvName.setText(name);
         viewHolder.tvAddress.setText(device.getAddress());
     }
@@ -56,8 +56,8 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.View
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            tvName = itemView.findViewById(R.id.tvName);
-            tvAddress = itemView.findViewById(R.id.tvAddress);
+            tvName = itemView.findViewById(com.iot.nima.blelib.R.id.tvName);
+            tvAddress = itemView.findViewById(com.iot.nima.blelib.R.id.tvAddress);
 
             itemView.setOnClickListener(v -> {
                 if (onItemRVClickListener != null) {

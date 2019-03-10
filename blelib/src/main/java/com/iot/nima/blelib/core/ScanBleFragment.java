@@ -1,4 +1,4 @@
-package com.iot.nima.blelib;
+package com.iot.nima.blelib.core;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
@@ -14,19 +14,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.iot.nima.blelib.R;
+
 import java.util.Objects;
 
 public class ScanBleFragment extends Fragment {
@@ -34,8 +29,6 @@ public class ScanBleFragment extends Fragment {
     private static final int REQUEST_CODE_LOCAL = 42;
     private static final long SCAN_PERIOD = 10 * 1000;
 
-    private BleDeviceAdapter bleListAdapter;
-    private List<BluetoothDevice> deviceList = new ArrayList<>();
     private BluetoothAdapter bluetoothAdapter;
     private Handler mHandler;
     private boolean isScanning = false;
@@ -47,33 +40,19 @@ public class ScanBleFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mHandler = new Handler();
         context = getContext();
-        setHasOptionsMenu(true);
     }
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.scan_fragment, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView rvDevice = view.findViewById(R.id.rvDevice);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
-        rvDevice.setLayoutManager(layoutManager);
-        bleListAdapter = new BleDeviceAdapter(context, deviceList).setOnItemRVClickListener(this::showControlDevice);
-        rvDevice.setAdapter(bleListAdapter);
-
         checkPermission();
-    }
-
-    private void showControlDevice(int pos) {
-        Intent i = new Intent(context, ControlBleActivity.class);
-        i.putExtra(ControlBleFragment.EXTRAS_DEVICE_NAME, deviceList.get(pos).getName());
-        i.putExtra(ControlBleFragment.EXTRAS_DEVICE_ADDRESS, deviceList.get(pos).getAddress());
-        startActivity(i);
     }
 
     private void checkPermission() {
@@ -100,41 +79,13 @@ public class ScanBleFragment extends Fragment {
             Toast.makeText(context, R.string.error_bluetooth_not_supported, Toast.LENGTH_SHORT).show();
             return;
         }
-        scanDevice(true);
-    }
-
-    private void scanDevice(boolean isScan) {
-        if (isScan) {
-            // Stops scanning after a pre-defined scan period.
-            mHandler.postDelayed(() -> {
-                if (isScanning) {
-                    isScanning = false;
-                    bluetoothAdapter.stopLeScan(bleScanCallback);
-                    updateScanUI();
-                } else {
-                    Log.i("ScanBleFragment", "scan stopped");
-                }
-            }, SCAN_PERIOD);
-
-            isScanning = true;
-            deviceList.clear();
-            bleListAdapter.notifyDataSetChanged();
-            bluetoothAdapter.startLeScan(bleScanCallback);
-        } else {
-            isScanning = false;
-            bluetoothAdapter.stopLeScan(bleScanCallback);
-        }
-        updateScanUI();
     }
 
     // Device scan callback.
     private BluetoothAdapter.LeScanCallback bleScanCallback = new BluetoothAdapter.LeScanCallback() {
         @Override
         public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-            if (!deviceList.contains(device)) {
-                deviceList.add(device);
-                bleListAdapter.notifyDataSetChanged();
-            }
+            onFindDevice(device, rssi);
         }
     };
 
@@ -158,26 +109,36 @@ public class ScanBleFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.scan_menu, menu);
+    // call after check permission in child Fragment or when click menu scan
+    protected void scanDevice(boolean isScan) {
+        if (isScan) {
+            // Stops scanning after a pre-defined scan period.
+            mHandler.postDelayed(() -> {
+                if (isScanning) {
+                    isScanning = false;
+                    bluetoothAdapter.stopLeScan(bleScanCallback);
+                    updateScanUI();
+                } else {
+                    Log.i("ScanBleFragment", "scan stopped");
+                }
+            }, SCAN_PERIOD);
 
-        menu.findItem(R.id.menuScan).setVisible(!isScanning);
-        menu.findItem(R.id.menuStop).setVisible(isScanning);
-        menu.findItem(R.id.menuProgress).setVisible(isScanning);
-        menu.findItem(R.id.menuProgress).setActionView(R.layout.layout_menu_progress);
-
-        super.onCreateOptionsMenu(menu, inflater);
+            isScanning = true;
+            bluetoothAdapter.startLeScan(bleScanCallback);
+        } else {
+            isScanning = false;
+            bluetoothAdapter.stopLeScan(bleScanCallback);
+        }
+        updateScanUI();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menuScan) scanDevice(true);
-        if (item.getItemId() == R.id.menuStop) scanDevice(false);
-        return super.onOptionsItemSelected(item);
+    protected boolean isScanning() {
+        return isScanning;
     }
 
-    private void updateScanUI() {
-        Objects.requireNonNull(getActivity()).invalidateOptionsMenu();
+    protected void updateScanUI() {
+    }
+
+    protected void onFindDevice(BluetoothDevice device, int rssi) {
     }
 }

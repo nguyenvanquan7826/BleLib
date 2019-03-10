@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.iot.nima.blelib;
+package com.iot.nima.blelib.core;
 
 import java.util.HashMap;
 
